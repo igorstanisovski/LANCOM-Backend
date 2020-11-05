@@ -11,7 +11,8 @@ namespace Weather.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        [StringLength(50, ErrorMessage = "{0} cannot be longer than 50 characters.")]
+        [StringLength(50, MinimumLength = 1 , ErrorMessage = "{0} must be between {1} and {2}.")]
+        [DataType(DataType.Text)]
         public string Name { get; set;  }
     }
 }
