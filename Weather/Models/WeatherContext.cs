@@ -12,6 +12,15 @@ namespace Weather.Models
 
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<City>()
+                .HasOne<Country>()
+                .WithOne()
+                .IsRequired()
+                .HasForeignKey<City>(p => p.CountryId);
+        }
     }
 
 }
