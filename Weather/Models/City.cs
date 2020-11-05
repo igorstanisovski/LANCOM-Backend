@@ -19,7 +19,7 @@ namespace Weather.Models
         [StringLength(100 , MinimumLength = 1, ErrorMessage = "{0} must be between {1} and {2} characters")]
         [DataType(DataType.Text)]
         public string Name { get; set; }
-        [Required(ErrorMessage = "{0} is required")]
+        //[Required(ErrorMessage = "{0} is required")]
         public int TemperatureInCelsius { get; set; }
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }

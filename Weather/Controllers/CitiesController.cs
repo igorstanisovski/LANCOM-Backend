@@ -19,17 +19,29 @@ namespace Weather.Controllers
         {
             _context = context;
         }
-
-        // GET: api/Cities
+        /// <summary>
+        /// Gets all cities.
+        /// </summary>
+        /// <returns>All available cities stored in database.</returns>
+        // GET: Cities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityDTO>>> GetCities()
         {
-            return await _context.Cities.ToListAsync();
+            return await _context.Cities.Select(x => CityToDTO(x)).ToListAsync();
         }
-
-        // GET: api/Cities/5
+        /// <summary>
+        /// Gets a specific city.
+        /// </summary>
+        /// /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     GET /Cities/1
+        ///     
+        /// </remarks>
+        /// <returns>A specific city.</returns>
+        // GET: Cities/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<City>> GetCity(int id)
+        public async Task<ActionResult<CityDTO>> GetCity(int id)
         {
             var city = await _context.Cities.FindAsync(id);
 
@@ -38,22 +50,44 @@ namespace Weather.Controllers
                 return NotFound();
             }
 
-            return city;
+            return CityToDTO(city);
         }
-
-        // PUT: api/Cities/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Edits a specific city.
+        /// </summary>
+        /// /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     PUT /Cities/1
+        ///     {
+        ///         "name":"Ljubljana",
+        ///         "countryId": 1,
+        ///         "temperatureInCelsius": 1,
+        ///         "date": "28-01-2020"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Edited specific city.</returns>
+        // PUT: Cities/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCity(int id, City city)
+        public async Task<IActionResult> PutCity(int id, CityDTO cityDTO)
         {
-            if (id != city.Id)
+            if (id != cityDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(city).State = EntityState.Modified;
-
+            _context.Entry(cityDTO).State = EntityState.Modified;
+            var city = await _context.Cities.FindAsync(id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+            city.Name = cityDTO.Name;
+            city.TemperatureInCelsius = cityDTO.TemperatureInCelsius;
+            city.Date = cityDTO.Date;
+            city.CountryId = cityDTO.CountryId;
+            city.Timestamp = DateTime.Now;
             try
             {
                 await _context.SaveChangesAsync();
@@ -72,20 +106,52 @@ namespace Weather.Controllers
 
             return NoContent();
         }
-
-        // POST: api/Cities
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Creates a city.
+        /// </summary>
+        /// /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     POST /Cities
+        ///     {
+        ///         "name": "Ljubljana",
+        ///         "countryId": 1
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Created city.</returns>
+        // POST: Cities
         [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
+        public async Task<ActionResult<CityDTO>> CreateCity(CityDTO cityDTO)
         {
-            _context.Cities.Add(city);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCity", new { id = city.Id }, city);
+            var checkIfCityExists = CityExistsByName(cityDTO.Name);
+            if (!checkIfCityExists)
+            {
+                var city = new City
+                {
+                    Name = cityDTO.Name,
+                    TemperatureInCelsius = cityDTO.TemperatureInCelsius,
+                    CountryId = cityDTO.CountryId,
+                    Date = cityDTO.Date,
+                    Timestamp = DateTime.Now
+                };
+                _context.Cities.Add(city);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetCity), new { id = city.Id }, CityToDTO(city));
+            }
+            return NoContent();
         }
-
-        // DELETE: api/Cities/5
+        /// <summary>
+        /// Deletes a specific city.
+        /// </summary>
+        /// /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     DELETE /Cities/1
+        ///     
+        /// </remarks>
+        /// <returns>Deleted city.</returns>
+        // DELETE: Cities/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<City>> DeleteCity(int id)
         {
@@ -105,8 +171,12 @@ namespace Weather.Controllers
         {
             return _context.Cities.Any(e => e.Id == id);
         }
+        private bool CityExistsByName(string cityName)
+        {
+            return _context.Cities.Any(e => e.Name == cityName);
+        }
 
-        private static CityDTO CityToDTO(CityDTO city)
+        private static CityDTO CityToDTO(City city)
         {
             return new CityDTO
             {
