@@ -19,14 +19,26 @@ namespace Weather.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Gets all countries.
+        /// </summary>
+        /// <returns>All available countries stored in database.</returns>
         // GET: Countries
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
         {
             return await _context.Countries.ToListAsync();
         }
-
+        /// <summary>
+        /// Gets a specific country by Id.
+        /// </summary>
+        /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     GET /Countries/1
+        /// </remarks>
+        /// <param name="id"></param>   
+        /// <returns>Specific country</returns>
         // GET: Countries/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Country>> GetCountry(int id)
@@ -40,7 +52,20 @@ namespace Weather.Controllers
 
             return country;
         }
-
+        /// <summary>
+        /// Edit a specific country by Id.
+        /// </summary>
+        /// <remarks>
+        /// /// Sample request:
+        ///
+        ///     PUT /Countries/1
+        ///     {
+        ///         "name": "Slovenia"
+        ///     }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="country"></param>
+        /// <returns>Edited country</returns>
         // PUT: Countries/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCountry(int id, Country country)
@@ -70,7 +95,29 @@ namespace Weather.Controllers
 
             return NoContent();
         }
-
+        /// <summary>
+        /// Creates countries.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Countries
+        ///     [
+        ///         {
+        ///             "name": "Slovenia"
+        ///         },
+        ///         {
+        ///             "name": "Macedonia"
+        ///         },
+        ///         {
+        ///             "name": "Germany"
+        ///         }
+        ///     ]
+        ///     
+        ///
+        /// </remarks>
+        /// <param name="countries"></param>
+        /// <returns>A newly created Countries</returns>
         // POST: Countries
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Country>>> CreateCountries(List<Country> countries)
@@ -94,7 +141,17 @@ namespace Weather.Controllers
         }
 
 
-
+        /// <summary>
+        /// Deletes a specific country by Id.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE /Countries/1
+        ///
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <returns>Deleted country.</returns>
         // DELETE: Countries/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Country>> DeleteCountry(int id)
