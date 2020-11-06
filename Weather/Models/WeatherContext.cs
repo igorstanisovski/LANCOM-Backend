@@ -17,9 +17,9 @@ namespace Weather.Models
         {
             modelBuilder.Entity<City>()
                 .HasOne<Country>()
-                .WithOne()
+                .WithMany()
                 .IsRequired()
-                .HasForeignKey<City>(p => p.CountryId);
+                .HasForeignKey(p => p.CountryId);
         }
     }
 
