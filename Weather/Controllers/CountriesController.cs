@@ -122,22 +122,19 @@ namespace Weather.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Country>>> CreateCountries(List<Country> countries)
         {
+            List<Country> addedContries = new List<Country>();
             for(int i = 0; i < countries.Count; i++)
             {
-                var checkIfExists = CountryExistsByName(countries[i].Name);
+                var checkIfExists = CountryExistsByName(countries[i].Name.ToLower());
                 if(!checkIfExists)
                 {
+                    addedContries.Add(countries[i]);
                     _context.Countries.Add(countries[i]);
                     await _context.SaveChangesAsync();
                 }
-                else
-                {
-                    countries.RemoveAt(i);
-                    //return NoContent();
-                }
             }
             
-            return CreatedAtAction(nameof(GetCountries),countries);
+            return CreatedAtAction(nameof(GetCountries),addedContries);
         }
 
 

@@ -25,7 +25,7 @@ namespace Weather.Controllers
         /// <returns>All available cities stored in database.</returns>
         // GET: Cities
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityDTO>>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityDTO>>> ListCities()
         {
             return await _context.Cities.Select(x => CityToDTO(x)).ToListAsync();
         }
@@ -60,7 +60,7 @@ namespace Weather.Controllers
         ///
         ///     PUT /Cities/1
         ///     {
-        ///         "name":"Ljubljana",
+        ///         "name":"Maribor",
         ///         "countryId": 1,
         ///         "temperatureInCelsius": 1,
         ///         "date": "28-01-2020"
@@ -114,7 +114,7 @@ namespace Weather.Controllers
         ///
         ///     POST /Cities
         ///     {
-        ///         "name": "Ljubljana",
+        ///         "name": "Maribor",
         ///         "countryId": 1
         ///     }
         ///     
@@ -124,7 +124,7 @@ namespace Weather.Controllers
         [HttpPost]
         public async Task<ActionResult<CityDTO>> CreateCity(CityDTO cityDTO)
         {
-            var checkIfCityExists = CityExistsByName(cityDTO.Name);
+            var checkIfCityExists = CityExistsByName(cityDTO.Name.ToLower());
             if (!checkIfCityExists)
             {
                 var city = new City
