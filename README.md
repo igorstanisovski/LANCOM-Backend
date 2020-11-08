@@ -22,10 +22,5 @@ Weather Info API for different cities in different countries measured in celsius
 
 ## Installation
 
-- Clone the project
-- Add NuGet packages (Visual Studio 2019 -> Tools -> NuGet Packet Manager -> Manage NuGet Packages for Solution):
-	1. Microsoft.EntityFrameworkCore.SqlServer
-	2. Microsoft.EntityFrameworkCore
-	3. Swashbuckle.AspNetCore
-	4. Microsoft.EntityFrameworkCore.Tools
+- Clone the project ``` git clone -b develop <remote_repo> ```
 - Start and enjoy!
