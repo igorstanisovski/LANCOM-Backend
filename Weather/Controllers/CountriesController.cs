@@ -118,8 +118,14 @@ namespace Weather.Controllers
         /// </remarks>
         /// <param name="countries"></param>
         /// <returns>A newly created Countries</returns>
+        /// <response code="201">Newly created countries.</response>
+        /// <response code="204">Countries already exist.</response>
+        /// <response code="400">Bad request.</response>
         // POST: Countries
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<Country>>> CreateCountries(List<Country> countries)
         {
             List<Country> addedContries = new List<Country>();
@@ -133,8 +139,14 @@ namespace Weather.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
-            
-            return CreatedAtAction(nameof(GetCountries),addedContries);
+            if(addedContries.Count == 0)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return CreatedAtAction(nameof(GetCountries), addedContries);
+            }
         }
 
 

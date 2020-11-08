@@ -23,8 +23,11 @@ namespace Weather.Controllers
         /// Gets all cities.
         /// </summary>
         /// <returns>All available cities stored in database.</returns>
+        /// <response code="200">Returns all cities</response>
+
         // GET: Cities
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CityDTO>>> ListCities()
         {
             return await _context.Cities.Select(x => CityToDTO(x)).ToListAsync();
@@ -120,8 +123,15 @@ namespace Weather.Controllers
         ///     
         /// </remarks>
         /// <returns>Created city.</returns>
+        /// <response code="201">Newly created city</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="204">City already exist</response>
         // POST: Cities
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+
         public async Task<ActionResult<CityDTO>> CreateCity(CityDTO cityDTO)
         {
             var checkIfCityExists = CityExistsByName(cityDTO.Name.ToLower());
